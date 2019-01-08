@@ -38,7 +38,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 		// 初始化容器
 		initSpringBean();
 		// 初始化映射路径
-		handlerMapping();
+		//handlerMapping();
 	}
 
 	@Override
