@@ -23,7 +23,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 
 	private static final long serialVersionUID = -6787656458826416038L;
 	// 扫描包路径
-	private String scanPackagePath = "com.hand.customer";
+	private String scanPackagePath = "com.hand.customer.springmvc";
 	// 将所有自定义注解的class交给此类管理,包含Controller,Service,Dao层相关
 	private ConcurrentHashMap<String, Object> containerBeans = new  ConcurrentHashMap<String, Object>();
 	// 存放注解中bean的别名
@@ -38,7 +38,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 		// 初始化容器
 		initSpringBean();
 		// 初始化映射路径
-		//handlerMapping();
+//		handlerMapping();
 	}
 
 	@Override
