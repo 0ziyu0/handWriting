@@ -38,7 +38,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 		// 初始化容器
 		initSpringBean();
 		// 初始化映射路径
-//		handlerMapping();
+		//		handlerMapping();
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 			resultAnntotationMap = new HashMap<>();
 			for (CustomerAnnotation annotation : CustomerAnnotation.values()) {
 				List<Class> annotationList = new ArrayList<Class>();
-				resultAnntotationMap.put(annotation.getClass(), annotationList);
+				resultAnntotationMap.put(annotation.getClazz(), annotationList);
 			}
 			String beanId = null;
 			String className = null;
@@ -148,6 +148,17 @@ public class DispatcherServletCustomer extends HttpServlet {
 		}
 
 		return resultAnntotationMap;
+	}
+
+	public Object getInstanceBean(String beanId) {
+
+		Object resultObject = null;
+		if(StringUtil.isNotEmpty(beanId)) {
+			resultObject = containerBeans.get(beanId);
+		}
+
+		return resultObject;
+
 	}
 
 	public enum CustomerAnnotation {
