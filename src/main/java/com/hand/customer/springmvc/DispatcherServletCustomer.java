@@ -3,6 +3,7 @@ package com.hand.customer.springmvc;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hand.customer.springmvc.annotation.CustomerController;
+import com.hand.customer.springmvc.annotation.CustomerRequestMapping;
 import com.hand.customer.springmvc.annotation.CustomerService;
 import com.hand.utils.ClassUtil;
 import com.hand.utils.StringUtil;
@@ -33,27 +35,63 @@ public class DispatcherServletCustomer extends HttpServlet {
 	// 存放请求路径与class中方法的关系(方便反射调用)
 	private ConcurrentHashMap<String, String> containerBeansMethod = new ConcurrentHashMap<String, String>();
 
+
+
+	public DispatcherServletCustomer() {
+		if(containerBeans == null || containerBeans.size() == 0) {
+			initSpringBean();
+		}
+	}
+
 	@Override
 	public void init() throws ServletException {
 		// 初始化容器
+		System.out.println("初始化容器开始...");
 		initSpringBean();
 		// 初始化映射路径
-		//		handlerMapping();
+		initHanderMapping();
+		System.out.println("初始化容器结束...");
 	}
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		super.doGet(req, resp);
+		//super.doGet(req, resp);
+		doDispatch(req, resp);
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-
-		super.doPost(req, resp);
+		doDispatch(req, resp);
 	}
-
+	
+	
+	private void doDispatch(HttpServletRequest req, HttpServletResponse resp) {
+		
+		try {
+			String url = req.getRequestURI();
+			url = url.substring(10, url.length());
+			Object beanObject = containerBeansUrl.get(url);
+			if(beanObject == null) {
+				resp.getWriter().println("http ext not found  controller 404");
+				return;
+			}
+			// 获取请求方法
+			String methodName = containerBeansMethod.get(url);
+			if(StringUtil.isNotEmpty(methodName)) {
+				Class<? extends Object> classInfo = beanObject.getClass();
+				Method method = classInfo.getMethod(methodName);
+				String resultInfo = (String) method.invoke(beanObject);
+				// 视图层
+				String suffix = ".jsp";
+				String prefix = "/";
+				req.getRequestDispatcher(prefix + resultInfo + suffix).forward(req, resp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+	}
 
 	private void initSpringBean() {
 
@@ -64,7 +102,38 @@ public class DispatcherServletCustomer extends HttpServlet {
 		for (Object classInfo : containerBeans.values()) { 
 			attributeInjection(classInfo);
 		}
-		beansAlias = null;
+		//beansAlias = null;
+	}
+
+	private void initHanderMapping() {
+
+		try {
+			String baseUrl = null;
+			String methodUrl = null;
+			for (Object classObject : containerBeans.values()) {
+				baseUrl = "";
+				Class<? extends Object> classInfo = classObject.getClass();
+				// 获取类上的根路径
+				CustomerRequestMapping requestMappingClassAnnotation = classInfo.getAnnotation(CustomerRequestMapping.class);
+				if(requestMappingClassAnnotation != null) {
+					baseUrl = requestMappingClassAnnotation.value();
+				}
+				Method[] declaredMethods = classInfo.getDeclaredMethods();
+				for (Method method : declaredMethods) {
+					methodUrl = "";
+					CustomerRequestMapping requestMappingMethodAnnotation  = method.getDeclaredAnnotation(CustomerRequestMapping.class);
+					if(requestMappingMethodAnnotation != null) {
+						methodUrl = requestMappingMethodAnnotation.value();
+						containerBeansUrl.put(baseUrl + methodUrl, classObject);
+						containerBeansMethod.put(baseUrl + methodUrl, method.getName());
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+
 	}
 
 	// 属性的依赖注入
@@ -129,6 +198,7 @@ public class DispatcherServletCustomer extends HttpServlet {
 				for (CustomerAnnotation annotation : CustomerAnnotation.values()) {
 					Annotation clazzAnnotation = classInfo.getDeclaredAnnotation(annotation.getClazz());
 					if(clazzAnnotation != null) {
+						List<Class> list = resultAnntotationMap.get(annotation.getClazz());
 						resultAnntotationMap.get(annotation.getClazz()).add(classInfo);
 						// 是否有自定义bean的名字,没有则采用类名小写
 						if(clazzAnnotation instanceof CustomerController) {
@@ -141,7 +211,12 @@ public class DispatcherServletCustomer extends HttpServlet {
 						if(StringUtil.isEmpty(beanId)) {
 							beanId = StringUtil.toLowerCaseFirstOne(className);
 						}
-						beansAlias.put(className, beanId);
+						try {
+							beansAlias.put(className, beanId);
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
