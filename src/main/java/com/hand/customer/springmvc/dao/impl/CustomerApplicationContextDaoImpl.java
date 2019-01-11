@@ -1,10 +1,10 @@
 package com.hand.customer.springmvc.dao.impl;
 
 import com.hand.customer.springmvc.annotation.CustomerController;
-import com.hand.customer.springmvc.dao.CustomerApplicationContextDao;
+import com.hand.customer.springmvc.dao.CustomerApplicationContextDaoTest;
 
 @CustomerController("customerDao")
-public class CustomerApplicationContextDaoImpl implements CustomerApplicationContextDao {
+public class CustomerApplicationContextDaoImpl implements CustomerApplicationContextDaoTest {
 
 	public void testCustomerApplicationContextTest() {
 		

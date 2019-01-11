@@ -1,6 +1,6 @@
 package com.hand.customer.springmvc.dao;
 
-public interface CustomerApplicationContextDao {
+public interface CustomerApplicationContextDaoTest {
 
 	public void testCustomerApplicationContextTest();
 	

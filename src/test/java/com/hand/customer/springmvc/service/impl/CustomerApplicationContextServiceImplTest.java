@@ -5,7 +5,7 @@ import com.hand.customer.spring.dao.CustomerApplicationContextDao;
 import com.hand.customer.spring.service.CustomerApplicationContextService;
 
 @CustomerService()
-public class CustomerApplicationContextServiceImpl implements CustomerApplicationContextService {
+public class CustomerApplicationContextServiceImplTest implements CustomerApplicationContextService {
 	
 	@CustomerService("customerDao")
 	private CustomerApplicationContextDao customerDao;

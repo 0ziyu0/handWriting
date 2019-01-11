@@ -4,7 +4,7 @@ import com.hand.customer.spring.annotation.CustomerService;
 import com.hand.customer.spring.dao.CustomerApplicationContextDao;
 
 @CustomerService("customerDao")
-public class CustomerApplicationContextDaoImpl implements CustomerApplicationContextDao {
+public class CustomerApplicationContextDaoImplTest implements CustomerApplicationContextDao {
 
 	public void testCustomerApplicationContextTest() {
 		

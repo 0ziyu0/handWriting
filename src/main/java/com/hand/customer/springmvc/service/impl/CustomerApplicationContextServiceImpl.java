@@ -1,14 +1,14 @@
 package com.hand.customer.springmvc.service.impl;
 
 import com.hand.customer.springmvc.annotation.CustomerService;
-import com.hand.customer.springmvc.dao.CustomerApplicationContextDao;
-import com.hand.customer.springmvc.service.CustomerApplicationContextService;
+import com.hand.customer.springmvc.dao.CustomerApplicationContextDaoTest;
+import com.hand.customer.springmvc.service.CustomerApplicationContextServiceTest;
 
 @CustomerService("contextService")
-public class CustomerApplicationContextServiceImpl implements CustomerApplicationContextService {
+public class CustomerApplicationContextServiceImpl implements CustomerApplicationContextServiceTest {
 	
 	@CustomerService("customerDao")
-	private CustomerApplicationContextDao customerDao;
+	private CustomerApplicationContextDaoTest customerDao;
 	
 	public void testCustomerApplicationContextTest() {
 		

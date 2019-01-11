@@ -1,6 +1,6 @@
 package com.hand.customer.springmvc.service;
 
-public interface CustomerApplicationContextService {
+public interface CustomerApplicationContextServiceTest {
 
 	public void testCustomerApplicationContextTest();
 	
