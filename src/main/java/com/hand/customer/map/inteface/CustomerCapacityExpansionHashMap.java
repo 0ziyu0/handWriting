@@ -9,6 +9,8 @@ public interface CustomerCapacityExpansionHashMap<Key, Value> {
 	Value remove(Key key);
 	
 	Integer size();
+	
+	public void print();
 
 	interface Entity<Key, Value> {
 		
