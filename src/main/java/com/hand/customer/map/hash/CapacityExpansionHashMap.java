@@ -66,7 +66,11 @@ public class CapacityExpansionHashMap<Key, Value> implements CustomerCapacityExp
 				if(oldeNode != null) {
 					oldeNode.nextNode = node.nextNode;
 					node = null;
+				} else {
+					nodeArray[hashCode] = null;
 				}
+				
+				--size;
 				break;
 			}
 			oldeNode = node;
